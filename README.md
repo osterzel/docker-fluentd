@@ -22,13 +22,15 @@ The output log looks exactly like Docker's JSON formatted logs, except each line
 
 Then, Fluentd adds the "container_id" field using the [record reformer](https://github.com/sonots/fluent-plugin-record-reformer) before writing out to local files using the [file output plugin](https://docs.fluentd.org/articles/out_file).
 
-Fluentd has [a lot of plugins](https://www.fluentd.org/plugins) and can probably support your data output destination. For example, if you want to output your logs to Elasticsearch instead of files, then, add the following line to `Dockerfile`
+Fluentd has [a lot of plugins](https://www.fluentd.org/plugins) and can probably support your data output destination. For example, if you want to output your logs to Elasticsearch instead of files, then, add the following lines to `Dockerfile`
 
 ```
-RUN ["/usr/local/bin/gem", "install", "fluent-plugin-record-reformer", "--no-rdoc", "--no-ri"]
+RUN ["apt-get", "update"]
+RUN ["apt-get", "install", "--yes", "make", "libcurl4-gnutls-dev"]
+RUN ["/usr/local/bin/gem", "install", "fluent-plugin-elasticsearch", "--no-rdoc", "--no-ri"]
 ```
 
-right before "ENTRYPOINT" and update `fluent.conf` as follows.
+right before "ENTRYPOINT". This installs the output plugin for Elasticsearch. Then, update `fluent.conf` as follows.
 
 
 ```
